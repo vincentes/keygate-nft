@@ -367,3 +367,85 @@ func GetKeyPermissions (c echo.Context) error {
 	c.JSON(http.StatusOK, response)
 	return nil
 }
+
+func CheckUserPermission (c echo.Context) error {
+	// HEAD /users/{userId}/permissions/{permissionId}
+
+	// get user id from params
+	userID := c.Param("userId")
+
+	// get permission id from params
+	permissionID := c.Param("permissionId")
+
+	tx := c.Get("Tx").(*sql.Tx)
+
+	// Check if user exists
+	exists, err := model.DoesUserExist(tx, userID)
+	if err != nil {
+		return err
+	}
+
+	if !exists {
+		c.NoContent(http.StatusNotFound)
+		return nil 
+	}
+
+	// Check if permission exists
+	exists, err = model.DoesPermissionExist(tx, permissionID)
+	if err != nil {
+		return err
+	}
+
+	if !exists {
+		c.NoContent(http.StatusNotFound)
+		return nil
+	}
+
+	// Check if user has permission
+	permissions, err := model.GetUserPermissions(tx, userID)
+	if err != nil {
+		return err
+	}
+
+	var hasPermission bool
+	for _, p := range permissions {
+		if p.ID == permissionID {
+			hasPermission = true
+			break
+		}
+	}
+
+	if err != nil {
+		c.NoContent(http.StatusInternalServerError)
+		return nil
+	}
+
+	if hasPermission {
+		c.NoContent(http.StatusOK)
+		return nil
+	}
+
+	c.NoContent(http.StatusNotFound)
+	return nil
+}
+
+func CheckUserPermissionByName (c echo.Context) error {
+	userID := c.Param("userId")
+	name := c.QueryParam("name")
+
+	tx := c.Get("Tx").(*sql.Tx)
+
+	allowed, err := model.CheckUserPermissionByName(tx, userID, name)
+
+	if err != nil {
+		return err
+	}
+
+	if allowed {
+		c.NoContent(http.StatusOK)
+	} else {
+		c.NoContent(http.StatusNotFound)
+	}
+
+	return nil
+}

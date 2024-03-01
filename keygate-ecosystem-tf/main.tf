@@ -37,7 +37,7 @@ locals {
 }
 
 module "keygate-api" {
-  source           = "../keygate-api"
+  source           = "../keygate-api-tf"
   app_name         = "${local.environment_name}-keygate-api"
   cloudflare_token = var.cloudflare_token
   environment_name = local.environment_name

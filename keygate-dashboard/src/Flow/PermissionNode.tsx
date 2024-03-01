@@ -22,9 +22,8 @@ const PermissionNode: FC<NodeProps> = ({ data, id }) => {
   const verifyUser = async () => {
     // get /users/{externalid}/permissions
     try {
-      console.log(externalUserId);
       try {
-        const response = await axios({
+        await axios({
           method: "HEAD",
           url: `http://localhost:8080/ext/users/${externalUserId}/permissions/${id}`,
         });

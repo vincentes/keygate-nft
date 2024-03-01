@@ -40,6 +40,7 @@ func main() {
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	e.Use(middleware.CORS())
 	e.Use(kgmiddleware.TransactionHandler(db.GetDB()))
 
 	// Validate
@@ -71,6 +72,21 @@ func main() {
 
 	e.GET("/users/:userId/keys", func(c echo.Context) error {
 		err := api.GetUserKeys(c)
+		return err
+	})
+
+	e.HEAD("/users/:userId/permissions", func(c echo.Context) error {
+		err := api.CheckUserPermissionByName(c)
+		return err
+	})
+
+	e.HEAD("/users/:userId/permissions/:permissionId", func(c echo.Context) error {
+		err := api.CheckUserPermission(c)
+		return err
+	})
+
+	e.HEAD("/ext/users/:extUserId/permissions/:permissionId", func(c echo.Context) error {
+		err := api.CheckUserPermissionByExternalID(c)
 		return err
 	})
 

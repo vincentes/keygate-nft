@@ -4,12 +4,14 @@ import (
 	"database/sql"
 
 	"github.com/google/uuid"
+	"github.com/labstack/gommon/log"
 )
 
 type Key struct {
 	ID string `json:"id"`
 	Name string `json:"name" validate:"required"`
 	Permissions []Permission `json:"permissions"`
+	Status string `json:"-"`
 }
 
 type Permission struct {
@@ -25,10 +27,11 @@ type KeyPermissionAttachment struct {
 	PermissionID string `json:"permission_id" validate:"required"`
 }
 
-func NewKey (name string, permissions []Permission) Key {
+func NewKey (name string, permissions []Permission, status string) Key {
 	return Key{
 		Name: name,
 		Permissions: permissions,
+		Status: status,
 	}
 }
 
@@ -65,7 +68,7 @@ func GetAttachedPermissions (tx *sql.Tx, keyID string) ([]Permission, error) {
 }
 
 func GetKeys (tx *sql.Tx) ([]Key, error) {
-	rows, err := tx.Query("SELECT * FROM `Key`")
+	rows, err := tx.Query("SELECT ID, Name, status FROM `Key`")
 	if err != nil {
 		return nil, err
 	}
@@ -74,12 +77,14 @@ func GetKeys (tx *sql.Tx) ([]Key, error) {
 	var keys []Key = make([]Key, 0)
 	for rows.Next() {
 		var key Key
-		err := rows.Scan(&key.ID, &key.Name)
+		err := rows.Scan(&key.ID, &key.Name, &key.Status)
 		if err != nil {
 			return nil, err
 		}
 		keys = append(keys, key)
 	}
+
+	log.Info("Keys: ", keys)
 
 	for i, key := range keys {
 		permissions, err := GetAttachedPermissions(tx, key.ID)
@@ -185,4 +190,23 @@ func GetKeyPermissions (tx *sql.Tx, keyID string) ([]Permission, error) {
 		permissions = append(permissions, permission)
 	}
 	return permissions, nil
+}
+
+func CheckUserPermissionByName (tx *sql.Tx, userID string, name string) (bool, error) {
+	log.Info("Checking permission for user ", userID, " with name ", name)
+	var count int
+	err := tx.QueryRow("SELECT COUNT(*) FROM UserKey uk JOIN KeyPermission kp ON uk.KeyID = kp.KeyID JOIN Permission p ON kp.PermissionID = p.ID WHERE uk.UserID = ? AND p.Name = ?", userID, name).Scan(&count)
+	return count > 0, err
+}
+
+func CheckUserPermission (tx *sql.Tx, userID string, permissionID string) (bool, error) {
+	var count int
+	err := tx.QueryRow("SELECT COUNT(*) FROM UserKey uk JOIN KeyPermission kp ON uk.KeyID = kp.KeyID WHERE uk.UserID = ? AND kp.PermissionID = ?", userID, permissionID).Scan(&count)
+	return count > 0, err
+}
+
+func CheckUserPermissionByExternalID (tx *sql.Tx, externalID string, permissionID string) (bool, error) {
+	var count int
+	err := tx.QueryRow("SELECT COUNT(*) FROM UserKey uk JOIN KeyPermission kp ON uk.KeyID = kp.KeyID WHERE uk.UserID = (SELECT ID FROM User WHERE ExternalID = ?) AND kp.PermissionID = ?", externalID, permissionID).Scan(&count)
+	return count > 0, err
 }

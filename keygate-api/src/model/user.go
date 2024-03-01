@@ -39,6 +39,36 @@ func DoesUserExist (tx *sql.Tx, id string) (bool, error) {
 	return false, nil
 }
 
+func DoesUserExistByExternalID (tx *sql.Tx, externalID string) (bool, error) {
+	rows, err := tx.Query("SELECT ID FROM User WHERE ExternalID = ?", externalID)
+	if err != nil {
+		return false, err
+	}
+	defer rows.Close()
+
+	if rows.Next() {
+		return true, nil
+	}
+
+	return false, nil
+}
+
+func GetUserByExternalID (tx *sql.Tx, externalID string) (*User, error) {
+	user := new(User)
+	row := tx.QueryRow("SELECT ID, ExternalID FROM User WHERE ExternalID = ?", externalID)
+	if row.Err() != nil {
+		return nil, row.Err()
+	}
+	
+	err := row.Scan(&user.ID, &user.ExternalID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+	}
+	return user, err
+}
+
 func GetUsers (tx *sql.Tx) ([]User, error) {
 	rows, err := tx.Query("SELECT ID, ExternalID FROM User")
 	if err != nil {
