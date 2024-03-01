@@ -1,0 +1,55 @@
+{
+  "name": "reactflow-cra",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@dagrejs/dagre": "^1.0.4",
+    "@testing-library/jest-dom": "^6.1.4",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.5.1",
+    "@types/jest": "^29.5.6",
+    "@types/node": "^20.8.7",
+    "@types/react": "^18.2.30",
+    "@types/react-dom": "^18.2.14",
+    "antd": "^5.14.2",
+    "axios": "^1.6.7",
+    "d3": "^7.8.5",
+    "d3-hierarchy": "^3.1.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-flow-builder": "^2.6.0",
+    "react-icons": "^5.0.1",
+    "react-scripts": "5.0.1",
+    "reactflow": "^11.9.4",
+    "swr": "^2.2.5",
+    "tailwindcss": "^3.4.1",
+    "web-vitals": "^3.5.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@juggle/resize-observer": "^3.4.0"
+  }
+}

@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+:root {
+  --light: 0 0% 46%;
+}
+
+.text-light {
+  color: hsl(var(--light));
+}
