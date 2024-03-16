@@ -1,11 +1,13 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"keygate/api/api"
 	"keygate/api/db"
 	kgmiddleware "keygate/api/middleware"
 	"net/http"
+	"strings"
 
 	"github.com/go-playground/validator"
 	"github.com/joho/godotenv"
@@ -26,10 +28,46 @@ type CustomValidator struct {
 	validator *validator.Validate
 }
 
+type ApiError struct {
+	Param string `json:"param"`
+	Message string `json:"message"`
+}
+
+func tagToMessage(fe validator.FieldError) string {
+	switch fe.Tag() {
+		case "required":
+			return "This field is required"
+		case "email":
+			return "Invalid email"
+		case "gtfield":
+			return "This field must be greater than " + fe.Param()
+	}
+
+	return fe.Tag()
+}
+
 func (cv *CustomValidator) Validate(i interface{}) error {
   if err := cv.validator.Struct(i); err != nil {
-    return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	var ve validator.ValidationErrors
+	var out []ApiError
+	if errors.As(err, &ve) {
+		out = make([]ApiError, len(ve))
+		for i, fe := range ve {
+			out[i] = ApiError{strings.ToLower(fe.Field()), tagToMessage(fe)}
+		}
+	} else {
+		out = append(out, ApiError{"unknown", err.Error()})
+	}
+
+	res := &api.JSendResponse{
+		Status:  api.ResponseError,
+		Message: "Validation error",
+		Data:    out,
+	}
+
+	return echo.NewHTTPError(http.StatusBadRequest, res)
   }
+
   return nil
 }
 
@@ -45,6 +83,10 @@ func main() {
 
 	// Validate
 	e.Validator = &CustomValidator{validator: validator.New()}
+
+	e.GET("/", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, &api.JSendResponse{ Message: "Keygate API v1.0", Status: "success" })
+	});
 
 	e.POST("/users", func(c echo.Context) error {
 		return api.CreateUser(c)
@@ -127,6 +169,61 @@ func main() {
 
 	e.DELETE("/permissions/:id", func(c echo.Context) error {
 		err := api.DeletePermission(c)
+		return err
+	})
+
+	e.POST("/collectibles", func(c echo.Context) error {
+		err := api.CreateCollectible(c)
+		return err
+	});
+
+	e.GET("/collectibles", func(c echo.Context) error {
+		err := api.GetCollectibles(c)
+		return err
+	});
+
+	e.GET("/quizzes", func(c echo.Context) error {
+		err := api.GetQuizzes(c)
+		return err
+	});
+
+	e.POST("/quizzes", func(c echo.Context) error {
+		err := api.CreateQuiz(c)
+		return err
+	});
+
+	e.POST("/quizzes/:id/questions", func(c echo.Context) error {
+		err := api.CreateQuestion(c)
+		return err
+	});
+
+	e.GET("/tiers", func(c echo.Context) error {
+		err := api.GetTiers(c)
+		return err
+	})
+
+	e.GET("/tiers/:id", func(c echo.Context) error {
+		err := api.GetTier(c)
+		return err
+	})
+
+	e.POST("/tiers", func(c echo.Context) error {
+		err := api.CreateTier(c)
+		return err
+	})
+
+	e.PUT("/tiers/:id", func(c echo.Context) error {
+		err := api.UpdateTier(c)
+		return err
+	})
+
+	e.DELETE("/tiers/:id", func(c echo.Context) error {
+		err := api.DeleteTier(c)
+		return err
+	})
+
+	e.POST("/images/upload-url", func(c echo.Context) error {
+		err := api.GetSignedURL(c)
 		return err
 	})
 

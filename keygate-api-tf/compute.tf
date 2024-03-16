@@ -24,6 +24,6 @@ resource "aws_instance" "instance_2" {
                 EOF
 
         tags = {
-        Name = "${var.environment_name}-ec2-1"
+                Name = "${var.environment_name}-ec2-1"
         }
-} 
+}

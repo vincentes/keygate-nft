@@ -7,12 +7,13 @@ import ReactFlow, {
   Edge,
   useEdgesState,
   MarkerType,
-  useReactFlow,
+  useNodes,
 } from "reactflow";
 import "reactflow/dist/style.css";
 import Dagre from "@dagrejs/dagre";
 import KeyNode from "./KeyNode";
 import PermissionNode from "./PermissionNode";
+import CreationActionButton from "./Menu/CreationActionButton";
 
 const g = new Dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
 
@@ -61,31 +62,10 @@ const getLayoutedElements = (nodes: Node[], edges: Edge[]) => {
 };
 
 function Flow() {
-  const { fitView } = useReactFlow();
   const [keys, setKeys] = useState<Key[]>([]);
   const [permissions, setPermissions] = useState<Permission[]>([]);
   const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
-
-  // Fetch keys from API
-  useEffect(() => {
-    fetch("http://localhost:8080/keys")
-      .then((res) => {
-        return res.json();
-      })
-      .then((res) => {
-        const permissions = new Set<Permission>();
-
-        res.data.forEach((key: Key) => {
-          key.permissions.forEach((permission) => {
-            permissions.add(permission);
-          });
-        });
-
-        setKeys(res.data);
-        setPermissions(Array.from(permissions));
-      });
-  }, []);
+  const [edges, setEdges] = useEdgesState<Edge[]>([]);
 
   // On keys change, update nodes
   useEffect(() => {
@@ -133,6 +113,7 @@ function Flow() {
       [...keyNodes, ...permissionNodes],
       edges
     );
+
     setNodes([...layouted.nodes]);
     setEdges([...layouted.edges]);
   }, [keys]);
@@ -148,6 +129,7 @@ function Flow() {
       >
         <Background />
         <Controls />
+        <CreationActionButton />
       </ReactFlow>
     </div>
   );

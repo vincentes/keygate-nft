@@ -39,3 +39,9 @@ variable "app_name" {
     type = string
     default = "web-app"
 }
+
+variable "s3_nft_image_bucket_name" {
+    description = "Name of the S3 bucket for NFT images"
+    type = string
+    default = "nft-images-skibidi"
+}

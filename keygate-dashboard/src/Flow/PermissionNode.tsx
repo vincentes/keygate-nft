@@ -1,7 +1,9 @@
+import DropdownButton from "antd/es/dropdown/dropdown-button";
 import axios from "axios";
 import { memo, useState, type FC } from "react";
 import { FaDoorClosed } from "react-icons/fa";
 import { Handle, Position, type NodeProps } from "reactflow";
+import ActionDropdown from "./Actions/ActionDropdown";
 
 interface User {
   id: string;
@@ -48,11 +50,13 @@ const PermissionNode: FC<NodeProps> = ({ data, id }) => {
         <div
           className={`flex flex-row text-xs justify-between pl-2 pr-5 py-2 border-b border-solid border-gray-200 transition-all ${statusToBorder[verification]}`}
         >
-          <div className="">
+          <div>
             <FaDoorClosed className="inline mr-4" />
             {data.label.toLowerCase()}
           </div>
-          <div className="text-light space-x-2">+</div>
+          <div className="text-light space-x-2">
+            <ActionDropdown />
+          </div>
         </div>
         <div className="p-5 text-light">
           Allows the user to view the drops page.

@@ -9,6 +9,7 @@ import (
 type User struct {
 	ID string `json:"id"`
 	ExternalID string `json:"external_id" validate:"required"`
+	Points int `json:"points"`
 }
 
 func NewUser (externalID string) User {

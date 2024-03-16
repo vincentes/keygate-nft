@@ -84,8 +84,6 @@ func GetKeys (tx *sql.Tx) ([]Key, error) {
 		keys = append(keys, key)
 	}
 
-	log.Info("Keys: ", keys)
-
 	for i, key := range keys {
 		permissions, err := GetAttachedPermissions(tx, key.ID)
 		if err != nil {
