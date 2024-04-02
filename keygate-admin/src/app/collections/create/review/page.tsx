@@ -30,11 +30,11 @@ export default function Page() {
           {image && (
             <img src={URL.createObjectURL(image)} className="w-64 h-64" />
           )}
-          <div className="flex flex-row w-[200px] space-x-4 items-center">
+          <div className="flex flex-row w-[300px] space-x-4 items-center">
             <div className="bg-light p-1">Name</div>
             <div>{name}</div>
           </div>
-          <div className="flex flex-row w-[200px] space-x-4 items-center">
+          <div className="flex flex-row w-[400px] space-x-4 items-start">
             <div className="bg-light p-1">Description</div>
             <div>{description}</div>
           </div>

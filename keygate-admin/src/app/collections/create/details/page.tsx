@@ -28,9 +28,11 @@ export default function Page() {
     name,
     description,
     image,
+    imageURL,
     setName,
     setDescription,
     setImage,
+    setImageURL,
     setValid,
   } = useContext(CollectionCreateContext);
 
@@ -40,12 +42,15 @@ export default function Page() {
         validateOnly: true,
       })
       .then((o) => {
-        setValid(true);
+        // If image URL -> NFT image has been uploaded
+        if (imageURL) {
+          setValid(true);
+        }
       })
       .catch((o) => {
         setValid(false);
       });
-  }, [form, formValues]);
+  }, [form, formValues, imageURL]);
 
   const uploadNFTImage = async (originFile: RcFile) => {
     const presignedReq = await fetch(
@@ -63,6 +68,7 @@ export default function Page() {
 
     const presignedBody = await presignedReq.json();
     const presignedURL = presignedBody.data.presigned_url;
+    const url = presignedBody.data.url;
 
     const blob = originFile as Blob;
     const etag = await calculateEtag(blob);
@@ -80,6 +86,8 @@ export default function Page() {
     } else {
       console.log("Image upload failed");
     }
+
+    setImageURL(url);
   };
 
   return (
@@ -117,10 +125,11 @@ export default function Page() {
                 listType="picture-card"
                 maxCount={1}
                 onChange={(info: any) => {
+                  // If image is selected
                   if (info.fileList.length > 0) {
-                    console.log("info 22", info);
-                    setImage(info.fileList[0].originFileObj);
-                    uploadNFTImage(info.fileList[0].originFileObj);
+                    const image = info.fileList[0].originFileObj;
+                    setImage(image);
+                    uploadNFTImage(image);
                   } else {
                     setImage("");
                   }

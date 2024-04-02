@@ -1,7 +1,7 @@
 "use client";
 
 import { CloseOutlined } from "@ant-design/icons";
-import { Button, Progress } from "antd";
+import { Button, Progress, notification } from "antd";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Dispatch,
@@ -10,6 +10,24 @@ import {
   useMemo,
   useState,
 } from "react";
+
+const submitCollection = async (
+  name: string,
+  description: string,
+  image: string
+) => {
+  return fetch("http://localhost:8080/collections", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name,
+      description,
+      image,
+    }),
+  });
+};
 
 const getNextPage = (pathname: string) => {
   const pages = [
@@ -54,6 +72,8 @@ export const CollectionCreateContext = createContext({
   setReceiptAddress: {} as Dispatch<SetStateAction<string>>,
   isValid: false,
   setValid: {} as Dispatch<SetStateAction<boolean>>,
+  imageURL: "",
+  setImageURL: {} as Dispatch<SetStateAction<string>>,
 });
 
 export default function Layout({
@@ -70,6 +90,8 @@ export default function Layout({
   const [blockchain, setBlockchain] = useState("");
   const [receiptAddress, setReceiptAddress] = useState("");
   const [isValid, setValid] = useState(false);
+  const [imageURL, setImageURL] = useState("");
+  const [api, contextHolder] = notification.useNotification();
 
   const contextValue = useMemo(
     () => ({
@@ -87,9 +109,28 @@ export default function Layout({
       setReceiptAddress,
       isValid,
       setValid,
+      imageURL,
+      setImageURL,
     }),
-    [name, description, image, price, blockchain, receiptAddress, isValid]
+    [
+      name,
+      description,
+      image,
+      price,
+      blockchain,
+      receiptAddress,
+      isValid,
+      imageURL,
+    ]
   );
+
+  const submitError = () => {
+    api.error({
+      message: "Error",
+      description: "Could not submit collection.",
+      placement: "bottom",
+    });
+  };
 
   return (
     <>
@@ -100,31 +141,46 @@ export default function Layout({
         />
       </div>
       <CollectionCreateContext.Provider value={contextValue}>
+        {contextHolder}
         {children}
-      </CollectionCreateContext.Provider>
-      <div className="fixed w-full bottom-[40px]">
-        <Progress
-          gapPosition="right"
-          percent={getPercentage(currentPath)}
-          status="active"
-          size={"small"}
-        />
-        <div className="flex flex-row mt-5 justify-between px-5">
-          <Button type="primary" disabled onClick={() => router.back()}>
-            Back
-          </Button>
-          <Button
-            type="primary"
-            onClick={() => {
-              router.push(getNextPage(currentPath));
-              setValid(false);
-            }}
-            disabled={!isValid}
-          >
-            {isLastPage(currentPath) ? "Deploy" : "Next"}
-          </Button>
+        <div className="fixed w-full bottom-[40px]">
+          <Progress
+            gapPosition="right"
+            percent={getPercentage(currentPath)}
+            status="active"
+            size={"small"}
+          />
+          <div className="flex flex-row mt-5 justify-between px-5">
+            <Button type="primary" disabled onClick={() => router.back()}>
+              Back
+            </Button>
+            <Button
+              type="primary"
+              onClick={async () => {
+                if (isLastPage(currentPath)) {
+                  submitCollection(name, description, imageURL)
+                    .then((response) => {
+                      if (response.ok) {
+                        router.push("/collections");
+                      } else {
+                        submitError();
+                      }
+                    })
+                    .catch(() => {
+                      submitError();
+                    });
+                } else {
+                  router.push(getNextPage(currentPath));
+                  setValid(false);
+                }
+              }}
+              disabled={!isValid}
+            >
+              {isLastPage(currentPath) ? "Deploy" : "Next"}
+            </Button>
+          </div>
         </div>
-      </div>
+      </CollectionCreateContext.Provider>
     </>
   );
 }

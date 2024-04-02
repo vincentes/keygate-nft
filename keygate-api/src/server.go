@@ -172,15 +172,20 @@ func main() {
 		return err
 	})
 
-	e.POST("/collectibles", func(c echo.Context) error {
-		err := api.CreateCollectible(c)
+	e.POST("/collections", func(c echo.Context) error {
+		err := api.CreateCollection(c)
 		return err
 	});
 
-	e.GET("/collectibles", func(c echo.Context) error {
-		err := api.GetCollectibles(c)
+	e.GET("/collections", func(c echo.Context) error {
+		err := api.GetCollections(c)
 		return err
 	});
+
+	e.DELETE("/collections/:id", func(c echo.Context) error {
+		err := api.DeleteCollection(c)
+		return err
+	})
 
 	e.GET("/quizzes", func(c echo.Context) error {
 		err := api.GetQuizzes(c)

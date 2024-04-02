@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider, UserButton, currentUser } from "@clerk/nextjs";
 import Sidebar from "../components/Sidebar";
-import { ConfigProvider, Layout } from "antd";
+import { ConfigProvider, Layout, notification } from "antd";
 import { Content } from "antd/es/layout/layout";
 
 const inter = Inter({ subsets: ["latin"] });

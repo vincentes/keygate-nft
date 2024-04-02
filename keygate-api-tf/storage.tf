@@ -34,7 +34,7 @@ resource "aws_s3_bucket_acl" "nft_storage_acl" {
   acl    = "public-read"
 }
 
-resource "aws_s3_bucket_cors_configuration" "example" {
+resource "aws_s3_bucket_cors_configuration" "nft_storage_cors" {
   bucket = aws_s3_bucket.nft_storage.id
 
   cors_rule {
