@@ -94,11 +94,11 @@ export default function Page() {
     <main className="flex min-h-screen min-w-screen flex-col items-left">
       <div className="p-16 ">
         <h1 className="text-3xl font-bold">
-          Detail the collection's information
+          Detail the collection&apos;s information
         </h1>
         <p className="text-lg">
-          There's no need to overthink this. This data is editable in future
-          steps.
+          There&apos;s no need to overthink this. This data is editable in
+          future steps.
         </p>
         <div className="">
           <Form
