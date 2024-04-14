@@ -1,5 +1,5 @@
 resource "aws_instance" "instance_1" {
-  ami           = "ami-0e731c8a588258d0d"
+  ami           = "ami-051f8a213df8bc089"
   instance_type = var.instance_type
   security_groups = [aws_security_group.instances.name]
 
@@ -35,7 +35,7 @@ EOF
 }
 
 resource "aws_instance" "instance_2" {
-  ami           = "ami-0e731c8a588258d0d"
+  ami           = "ami-051f8a213df8bc089"
   instance_type = var.instance_type
   security_groups = [aws_security_group.instances.name]
 
@@ -66,6 +66,6 @@ nohup ./api &
 EOF
 
   tags = {
-    Name = "${var.environment_name}-ec2-1"
+    Name = "${var.environment_name}-ec2-2"
   }
 }
