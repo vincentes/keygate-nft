@@ -101,3 +101,22 @@ func CreateToken (tx *sql.Tx, tkn *Token) error {
 
 	return nil
 }
+
+func GetTokens (tx *sql.Tx) ([]Token, error) {
+	rows, err := tx.Query("SELECT ID, Name, Description, Address FROM Tokens");
+	if err != nil {
+		return nil, err;
+	}
+	defer rows.Close();
+
+	tokens := []Token{};
+	for rows.Next() {
+		var tkn Token;
+		err = rows.Scan(&tkn.ID, &tkn.Name, &tkn.Description, &tkn.Address);
+		if err != nil {
+			return nil, err;
+		}
+		tokens = append(tokens, tkn);
+	}
+	return tokens, nil;
+}

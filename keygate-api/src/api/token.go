@@ -29,3 +29,20 @@ func CreateToken(c echo.Context) error {
 	c.JSON(http.StatusOK, response);
 	return nil;
 }
+
+func GetTokens (c echo.Context) error {
+	tx := c.Get("Tx").(*sql.Tx)
+	tokens, err := model.GetTokens(tx)
+	if err != nil {
+		return err
+	}
+
+	response := JSendResponse{
+		Status:  ResponseSuccess,
+		Message: "Tokens retrieved successfully.",
+		Data:    tokens,
+	};
+
+	c.JSON(http.StatusOK, response);
+	return nil;
+}

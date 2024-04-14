@@ -237,5 +237,10 @@ func main() {
 		return err
 	})
 
+	e.GET("/tokens/", func(c echo.Context) error {
+		err := api.GetTokens(c)
+		return err
+	})
+
 	e.Logger.Fatal(e.Start(":8080"))
 }
