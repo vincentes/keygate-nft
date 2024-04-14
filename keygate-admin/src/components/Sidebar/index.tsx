@@ -12,40 +12,8 @@ const items: MenuProps["items"] = [
     key: "/dashboard",
   },
   {
-    label: "Blocks",
-    key: "blocks",
-    children: [
-      {
-        label: "Collections",
-        key: "/collections",
-      },
-      {
-        label: "Collectibles",
-        key: "/collectibles",
-      },
-      {
-        label: "Release",
-        key: "/releases",
-      },
-    ],
-  },
-  {
-    label: "Flows",
-    key: "flows",
-    children: [
-      {
-        label: "Loyalty",
-        key: "loyalty",
-      },
-      {
-        label: "Marketplace",
-        key: "marketplace",
-      },
-      {
-        label: "Passport",
-        key: "passport",
-      },
-    ],
+    label: "Tokens",
+    key: "/tokens",
   },
 ];
 

@@ -19,7 +19,11 @@ func CreateToken(c echo.Context) error {
 	}
 
 	tx := c.Get("Tx").(*sql.Tx)
-	model.CreateToken(tx, &token);
+	err := model.CreateToken(tx, &token);
+
+	if err != nil {
+		return err
+	}
 
 	response := JSendResponse{
 		Status:  ResponseSuccess,

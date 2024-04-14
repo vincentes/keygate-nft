@@ -9,6 +9,7 @@ import (
 	"github.com/blocto/solana-go-sdk/program/system"
 	"github.com/blocto/solana-go-sdk/program/token"
 	"github.com/blocto/solana-go-sdk/types"
+	"github.com/google/uuid"
 	"github.com/labstack/gommon/log"
 )
 
@@ -96,10 +97,11 @@ func CreateToken (tx *sql.Tx, tkn *Token) error {
 	log.Printf("Transaction sent: %s", txSig);
 
 	tkn.Address = account.PublicKey.String();
+	ID := uuid.New().String()
 
-	_, err = tx.Exec("INSERT INTO Tokens (ID, Name, Description, Address) VALUES (?, ?, ?, ?)", tkn.ID, tkn.Name, tkn.Description, tkn.Address);
+	_, err = tx.Exec("INSERT INTO Tokens (ID, Name, Description, Address) VALUES (?, ?, ?, ?)", ID, tkn.Name, tkn.Description, tkn.Address);
 
-	return nil
+	return err;
 }
 
 func GetTokens (tx *sql.Tx) ([]Token, error) {
