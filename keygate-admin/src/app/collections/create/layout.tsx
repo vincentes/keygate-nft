@@ -3,13 +3,8 @@
 import { CloseOutlined } from "@ant-design/icons";
 import { Button, Progress, notification } from "antd";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  Dispatch,
-  SetStateAction,
-  createContext,
-  useMemo,
-  useState,
-} from "react";
+import { useMemo, useState } from "react";
+import { CollectionCreateContext } from "../../../context/CollectionCreate";
 
 const submitCollection = async (
   name: string,
@@ -56,25 +51,6 @@ const getPercentage = (pathname: string) => {
 const isLastPage = (pathname: string) => {
   return pathname === "/collections/create/review";
 };
-
-export const CollectionCreateContext = createContext({
-  image: "",
-  setImage: {} as Dispatch<SetStateAction<string>>,
-  name: "",
-  setName: {} as Dispatch<SetStateAction<string>>,
-  description: "",
-  setDescription: {} as Dispatch<SetStateAction<string>>,
-  price: 0,
-  setPrice: {} as Dispatch<SetStateAction<number>>,
-  blockchain: "",
-  setBlockchain: {} as Dispatch<SetStateAction<string>>,
-  receiptAddress: "",
-  setReceiptAddress: {} as Dispatch<SetStateAction<string>>,
-  isValid: false,
-  setValid: {} as Dispatch<SetStateAction<boolean>>,
-  imageURL: "",
-  setImageURL: {} as Dispatch<SetStateAction<string>>,
-});
 
 export default function Layout({
   children,

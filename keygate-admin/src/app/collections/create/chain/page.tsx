@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext, useEffect, useState } from "react";
-import { CollectionCreateContext } from "../layout";
+import { CollectionCreateContext } from "../../../../context/CollectionCreate";
 
 export default function Page() {
   const { blockchain, setBlockchain, setValid } = useContext(

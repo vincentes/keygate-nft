@@ -2,7 +2,7 @@
 
 import { Form, Input } from "antd";
 import { useContext, useEffect } from "react";
-import { CollectionCreateContext } from "../layout";
+import { CollectionCreateContext } from "../../../../context/CollectionCreate";
 
 export default function Page() {
   const { price, setPrice, receiptAddress, setReceiptAddress, setValid } =

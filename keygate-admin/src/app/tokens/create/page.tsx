@@ -3,7 +3,8 @@
 import { CloseOutlined } from "@ant-design/icons";
 import { Button, Form, Input, notification } from "antd";
 import { useRouter } from "next/navigation";
-import { createContext, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { TokenCreateContext } from "../../../context/TokenCreate";
 
 const submitToken = async (name: string, description: string) => {
   return fetch("http://localhost:8080/tokens/", {
@@ -18,12 +19,7 @@ const submitToken = async (name: string, description: string) => {
   });
 };
 
-export const TokenCreateContext = createContext({
-  name: "",
-  setName: {} as React.Dispatch<React.SetStateAction<string>>,
-  description: "",
-  setDescription: {} as React.Dispatch<React.SetStateAction<string>>,
-});
+  
 
 export default function CreateToken() {
   const router = useRouter();

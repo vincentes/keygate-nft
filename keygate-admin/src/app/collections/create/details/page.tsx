@@ -9,9 +9,9 @@ import { Button, Form, Input, Upload } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import TextArea from "antd/es/input/TextArea";
 import { useContext, useEffect, useState } from "react";
-import { CollectionCreateContext } from "../layout";
 import { RcFile } from "antd/es/upload";
 import { calculateEtag } from "../../../../utils";
+import { CollectionCreateContext } from "../../../../context/CollectionCreate";
 
 const normFile = (e: any) => {
   if (Array.isArray(e)) {
@@ -141,6 +141,8 @@ export default function Page() {
                           uid: "-1",
                           name: "image.png",
                           status: "done",
+                          // ignore error
+                          // @ts-ignore
                           url: URL.createObjectURL(image),
                         },
                       ]

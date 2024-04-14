@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext, useEffect } from "react";
-import { CollectionCreateContext } from "../layout";
+import { CollectionCreateContext } from "../../../../context/CollectionCreate";
 
 export default function Page() {
   const {
@@ -28,6 +28,8 @@ export default function Page() {
         </p>
         <div className="flex flex-col space-y-2">
           {image && (
+            // ignore error
+            // @ts-ignore
             <img src={URL.createObjectURL(image)} className="w-64 h-64" />
           )}
           <div className="flex flex-row w-[300px] space-x-4 items-center">
