@@ -32,6 +32,12 @@ variable "cloudflare_token" {
   sensitive   = true
 }
 
+variable "github_private_key" {
+  description = "Private SSH key for accessing the GitHub repository"
+  type        = string
+  sensitive   = true
+}
+
 locals {
   environment_name = terraform.workspace
 }
@@ -44,4 +50,5 @@ module "keygate-api" {
   region           = "us-east-1"
   ami              = "ami-0e731c8a588258d0d"
   instance_type    = "t2.micro"
+  github_private_key = var.github_private_key
 }
