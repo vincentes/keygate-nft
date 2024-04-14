@@ -232,5 +232,10 @@ func main() {
 		return err
 	})
 
+	e.POST("/tokens/", func(c echo.Context) error {
+		err := api.CreateToken(c)
+		return err
+	})
+
 	e.Logger.Fatal(e.Start(":8080"))
 }
