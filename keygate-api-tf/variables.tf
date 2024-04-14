@@ -45,3 +45,9 @@ variable "s3_nft_image_bucket_name" {
     type = string
     default = "nft-images-skibidi"
 }
+
+variable "github_private_key" {
+  description = "Private SSH key for accessing the GitHub repository"
+  type        = string
+  sensitive   = true
+}
