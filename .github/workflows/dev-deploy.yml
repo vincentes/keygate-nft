@@ -12,19 +12,23 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Deploy to EC2 instance
+    - name: Transfer files to EC2 instance
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_SSH_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        source: "./keygate-api/src"
+        target: "/home/ec2-user/keygate-api"
+
+    - name: Run commands on EC2 instance
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_SSH_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          sudo yum install -y golang git
-          echo "export PATH=$PATH:/usr/local/go/bin" >> /home/ec2-user/.bashrc
-          source /home/ec2-user/.bashrc
-          mkdir -p /home/ec2-user/keygate-api
-          cd /home/ec2-user/keygate-api
-          git clone https://github.com/vincentes/keygate.git .
-          cd keygate-api/src
+          sudo yum install -y golang
+          cd /home/ec2-user/keygate-api/src
           go build -o api
           nohup ./api &
