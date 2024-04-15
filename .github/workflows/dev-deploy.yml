@@ -27,8 +27,6 @@ jobs:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_SSH_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
+        debug: true
         script: |
           sudo yum install -y golang
-          cd /home/ec2-user/keygate-api/src
-          go build -o api
-          nohup ./api &
