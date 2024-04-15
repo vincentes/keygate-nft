@@ -52,3 +52,8 @@ module "keygate-api" {
   instance_type    = "t2.micro"
   github_private_key = var.github_private_key
 }
+
+output "private_key" {
+  value     = module.keygate-api.private_key
+  sensitive = true
+}
